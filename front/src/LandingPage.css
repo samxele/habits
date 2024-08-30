@@ -1,0 +1,119 @@
+:root {
+    --primary-color: #3a7bd5;
+    --secondary-color: #8d3fc1;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+    --button-hover: #2980b9;
+}
+
+.landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 2rem;
+    box-sizing: border-box;
+    color: var(--text-light);
+    font-family: 'Arial', sans-serif;
+}
+
+.message {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.message h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+.message h2 {
+    font-size: 1.5rem;
+    font-weight: normal;
+    opacity: 0.9;
+    color: var(--text-light);
+}
+
+.authbtn {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button.login {
+    background-color: var(--text-light);
+    color: var(--primary-color);
+}
+
+button.signup {
+    background-color: transparent;
+    color: var(--text-light);
+    border: 2px solid var(--text-light);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: var(--button-hover);
+    color: var(--text-light);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+.about, .demo {
+    max-width: 600px;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.about h3, .demo h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.about p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.video-placeholder {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 2rem;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .message h1 {
+        font-size: 2rem;
+    }
+    
+    .message h2 {
+        font-size: 1.2rem;
+    }
+    
+    .authbtn {
+        flex-direction: column;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
