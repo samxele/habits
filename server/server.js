@@ -19,6 +19,7 @@ mongoose.connect(process.env.MONGODB_URI)
 .catch(err => console.log('MDB connection error: ', err));
 
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/tasks/', require('./routes/taskRoutes'));
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
 })

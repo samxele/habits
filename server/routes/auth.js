@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const authMiddleware = require('../middleware/auth')
 
 const sendTokenResponse = (user, statusCode, res) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -25,18 +26,7 @@ const sendTokenResponse = (user, statusCode, res) => {
         });
 };
 
-const authenticationToken = (req, res, next) => {
-    const token = req.cookies.token;
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-};
-
-router.get('/me', authenticationToken, async (req, res) => {
+router.get('/me', authMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
         res.json(user);
@@ -46,7 +36,7 @@ router.get('/me', authenticationToken, async (req, res) => {
     }
 });
 
-router.get('/verify', authenticationToken, (req, res) => {
+router.get('/verify', authMiddleware, (req, res) => {
     res.sendStatus(200);
   });
 
