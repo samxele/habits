@@ -1,47 +1,54 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const SidebarContainer = styled.aside`
-  width: 250px;
+  width: 200px;
   background-color: ${props => props.theme.colors.surface};
   padding: 1rem;
+  border-right: 1px solid ${props => props.theme.colors.background};
 `;
 
 const SidebarLink = styled(Link)`
   display: block;
   color: ${props => props.theme.colors.text.primary};
   text-decoration: none;
-  padding: 0.5rem 0;
-  &:hover {
-    color: ${props => props.theme.colors.text.secondary};
-  }
-`;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.25rem;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 
-const AddButton = styled.button`
-  width: 100%;
-  padding: 0.5rem;
-  background-color: ${props => props.theme.colors.secondary};
-  color: ${props => props.theme.colors.text.primary};
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 1rem;
+  &:hover {
+    background-color: ${props => props.theme.colors.hover};
+  }
+
+  ${props => props.active && `
+    background-color: ${props.theme.colors.secondary};
+    color: ${props.theme.colors.background};
+    font-weight: 600;
+
+    &:hover {
+      background-color: ${props.theme.colors.secondary};
+    }
+  `}
 `;
 
 const Sidebar = () => {
-  const [showAddModal, setShowAddModal] = useState(false);
+  const location = useLocation();
 
   return (
     <SidebarContainer>
-      {/* <AddButton onClick={() => setShowAddModal(true)}>Add New Habit/Task</AddButton> */}
-      <SidebarLink to="/dashboard/tasks">Daily Tasks</SidebarLink>
-      <SidebarLink to="/dashboard/weekly">Daily and Weekly Habits</SidebarLink>
-      <SidebarLink to="/dashboard/monthly">Monthly View</SidebarLink>
-      {showAddModal && (
-        // Add your modal component here
-        <div>Modal for adding new habit/task</div>
-      )}
+      <SidebarLink to="/dashboard/tasks" active={location.pathname === '/dashboard/tasks'}>
+        Daily Tasks
+      </SidebarLink>
+      <SidebarLink to="/dashboard/weekly" active={location.pathname === '/dashboard/weekly'}>
+        Habit Tracker
+      </SidebarLink>
+      <SidebarLink to="/dashboard/monthly" active={location.pathname === '/dashboard/monthly'}>
+        Monthly View
+      </SidebarLink>
     </SidebarContainer>
   );
 };

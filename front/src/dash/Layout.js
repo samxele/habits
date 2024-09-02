@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
         <Sidebar />
         <MainContent>{children}</MainContent>
       </ContentWrapper>
-      <Footer />
+      {/* <Footer /> */}
     </LayoutContainer>
   );
 };
