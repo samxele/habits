@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import Layout from '../dash/Layout';
@@ -248,6 +248,9 @@ function Tasks() {
   const [editingTaskName, setEditingTaskName] = useState("");
   const [showError, setShowError] = useState(false);
 
+  const newTaskInputRef = useRef(null);
+  const editTaskInputRef = useRef(null);
+
   const currentDate = new Date().toLocaleDateString('en-US', { 
     weekday: 'long', 
     year: 'numeric', 
@@ -303,24 +306,6 @@ function Tasks() {
     }
   };
 
-  const handleNewTaskChange = (e) => {
-    setNewTask(e.target.value);
-  };
-
-  const handleNewTaskKeyPress = async (e) => {
-    if (e.key === 'Enter' && newTask.trim()) {
-      try {
-        const response = await axios.post(`http://localhost:3000/api/tasks`, { name: newTask.trim() }, { withCredentials: true });
-        setTasks([...tasks, response.data]);
-        setNewTask("");
-        setIsAddingTask(false);
-      } catch (err) {
-        showErrorMessage('Failed to add task. Please try again');
-        console.error('Error adding task:', err);
-      }   
-    }
-  };
-
   const deleteTask = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/tasks/${id}`, { withCredentials: true });
@@ -329,15 +314,6 @@ function Tasks() {
       showErrorMessage('Failed to delete task. Please try again');
       console.error('Error deleting task:', err);
     }
-  };
-
-  const startEditing = (task) => {
-    setEditingTaskId(task._id);
-    setEditingTaskName(task.name);
-  };
-
-  const handleEditChange = (e) => {
-    setEditingTaskName(e.target.value);
   };
 
   const handleEditSubmit = async (e) => {
@@ -367,6 +343,80 @@ function Tasks() {
     }, 5000);
   };
 
+  const handleTask = () => {
+    setIsAddingTask(true);
+  };
+
+  const handleCancelAddTask = () => {
+    setIsAddingTask(false);
+    setNewTask("");
+  };
+
+  const handleNewTaskBlur = () => {
+    if (newTask.trim() === "")  {
+      handleCancelAddTask();
+    }
+  };
+
+  const handleEditBlur = () => {
+    setEditingTaskId(null);
+    setEditingTaskName("");
+  };
+
+  const handleNewTaskChange = (e) => {
+    setNewTask(e.target.value);
+  };
+
+  const handleNewTaskKeyPress = async (e) => {
+    if (e.key === 'Enter' && newTask.trim()) {
+      try {
+        const response = await axios.post(`http://localhost:3000/api/tasks`, { name: newTask.trim() }, { withCredentials: true });
+        setTasks([...tasks, response.data]);
+        setNewTask("");
+        setIsAddingTask(false);
+      } catch (err) {
+        showErrorMessage('Failed to add task. Please try again');
+        console.error('Error adding task:', err);
+      }   
+    } else if (e.key === 'Escape') {
+      handleCancelAddTask();
+    }
+  };
+
+  const startEditing = (task) => {
+    setEditingTaskId(task._id);
+    setEditingTaskName(task.name);
+  };
+
+  const handleEditChange = (e) => {
+    setEditingTaskName(e.target.value);
+  };
+
+  const handleEditKeyPress = async (e) => {
+    if (e.key === 'Enter' && editingTaskName.trim()) {
+      await submitEdit();
+    } else if (e.key === 'Escape') {
+      handleEditBlur();
+    }
+  };
+
+  const submitEdit = async () => {
+    try {
+      const response = await axios.patch(`http://localhost:3000/api/tasks/${editingTaskId}`, 
+        { name: editingTaskName.trim() }, 
+        { withCredentials: true }
+      );
+      setTasks(tasks.map(task => 
+        task._id === editingTaskId ? { ...task, name: response.data.name } : task
+      ));
+      setEditingTaskId(null);
+      setEditingTaskName("");
+    } catch (err) {
+      showErrorMessage('Failed to update task. Please try again.');
+      console.error('Error updating task:', err);
+    }
+  };
+
   return (
     <Layout>
       <ErrorMessage $show={showError}>{error}</ErrorMessage>
@@ -387,9 +437,11 @@ function Tasks() {
                     />
                     {editingTaskId === task._id ? (
                       <EditInput
+                        ref={editTaskInputRef}
                         value={editingTaskName}
                         onChange={handleEditChange}
-                        onKeyDown={handleEditSubmit}
+                        onKeyDown={handleEditKeyPress}
+                        onBlur={handleEditBlur}
                         autoFocus
                       />
                     ) : (
@@ -409,11 +461,13 @@ function Tasks() {
                   <TaskItem>
                     <CheckCircle checked={false} />
                     <NewTaskInput
+                      ref={newTaskInputRef}
                       type="text"
                       placeholder="Type your new task and press Enter"
                       value={newTask}
                       onChange={handleNewTaskChange}
                       onKeyDown={handleNewTaskKeyPress}
+                      onBlur={handleNewTaskBlur}
                       autoFocus
                     />
                   </TaskItem>
