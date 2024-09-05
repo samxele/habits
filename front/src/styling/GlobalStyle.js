@@ -27,6 +27,35 @@ const GlobalStyle = createGlobalStyle`
         font-weight: 500;
         cursor: pointer;
     }
+
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+        body {
+            font-size: 16px; /* Slightly larger font size for readability on small screens */
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        /* Adjust input and button sizes for touch interfaces */
+        input, button {
+            font-size: 16px; /* Prevents zooming on input focus on iOS */
+            min-height: 44px; /* Minimum touch target size */
+        }
+
+        /* Prevent horizontal scrolling */
+        .container {
+            width: 100%;
+            padding-left: 15px;
+            padding-right: 15px;
+            overflow-x: hidden;
+        }
+    }
 `;
 
 export default GlobalStyle;

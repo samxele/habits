@@ -40,14 +40,14 @@ const Sidebar = () => {
 
   return (
     <SidebarContainer>
+      <SidebarLink to="/dashboard" active={location.pathname === '/dashboard'}>
+        Dashboard
+      </SidebarLink>
       <SidebarLink to="/dashboard/tasks" active={location.pathname === '/dashboard/tasks'}>
         Daily Tasks
       </SidebarLink>
       <SidebarLink to="/dashboard/weekly" active={location.pathname === '/dashboard/weekly'}>
         Habit Tracker
-      </SidebarLink>
-      <SidebarLink to="/dashboard/monthly" active={location.pathname === '/dashboard/monthly'}>
-        Monthly View
       </SidebarLink>
     </SidebarContainer>
   );

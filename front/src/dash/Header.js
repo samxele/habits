@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../styling/ThemeContext';
-import { FaSun, FaMoon } from 'react-icons/fa';
+import { FaSun, FaMoon, FaSignOutAlt } from 'react-icons/fa';
 
 const HeaderContainer = styled.header`
   background-color: ${props => props.theme.colors.surface};
@@ -24,16 +24,6 @@ const NavLinks = styled.nav`
   display: flex;
   gap: 1rem;
   align-items: center;
-`;
-
-const NavLink = styled(Link)`
-  color: ${props => props.theme.colors.text.primary};
-  text-decoration: none;
-  transition: color 0.3s ease;
-  
-  &:hover {
-    color: ${props => props.theme.colors.secondary};
-  }
 `;
 
 const ThemeToggle = styled.button`
@@ -78,17 +68,45 @@ const IconWrapper = styled.div`
   }
 `;
 
+const LogoutButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: ${props => props.theme.colors.text.primary};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.hover};
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.primary};
+  }
+`;
+
 const Header = () => {
   const { isDarkMode, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Implement your logout logic here
+    // For example:
+    // logout();
+    navigate('/login');
+  };
 
   return (
     <HeaderContainer>
       <Logo to="/dashboard">Habit Maker</Logo>
       <NavLinks>
-        <NavLink to="/dashboard">Dashboard</NavLink>
-        <NavLink to="/profile">Profile</NavLink>
-        <NavLink to="/logout">Logout</NavLink>
-        <ThemeToggle 
+      <ThemeToggle 
           onClick={toggleTheme} 
           aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
         >
@@ -96,6 +114,10 @@ const Header = () => {
             {isDarkMode ? <FaSun /> : <FaMoon />}
           </IconWrapper>
         </ThemeToggle>
+        <LogoutButton onClick={handleLogout}>
+          <FaSignOutAlt />
+          Logout
+        </LogoutButton>
       </NavLinks>
     </HeaderContainer>
   );
