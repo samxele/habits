@@ -4,6 +4,16 @@ const API_URL = "http://localhost:3000/api/auth/";
 
 axios.defaults.withCredentials = true;
 
+axios.interceptors.response.use(
+    (response) => response, 
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            window.location.href = '/auth';
+        }
+        return Promise.reject(error);
+    }
+);
+
 const register = async (name, email, password) => {
     try {
         const response = await axios.post(API_URL + "register", {
@@ -41,6 +51,9 @@ const isAuthenticated = async () => {
         await axios.get(API_URL + "verify");
         return true;
     } catch (error) {
+        if (error.response && error.response.status === 401) {
+            window.location.href ='/auth';
+        }
         return false;
     }
 };

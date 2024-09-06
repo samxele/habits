@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import Layout from './Layout';
-import { FaPlus, FaTrash, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaPlus, FaTrash, FaChevronLeft, FaChevronRight, FaChevronUp, FaChevronDown } from 'react-icons/fa';
 
 const DashboardContainer = styled.div`
   display: flex;
@@ -202,12 +202,37 @@ const Icon = styled.div`
   }
 `;
 
+const TaskListWrapper = styled.div`
+  max-height: ${props => props.isExpanded ? 'none' : '210px'};
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+`;
+
+const ExpandButton = styled.button`
+  background: none;
+  border: none;
+  color: ${props => props.theme.colors.primary};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: ${props => props.theme.colors.hover};
+  }
+`;
+
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const isToday = (date) => {
     const today = new Date();
@@ -320,6 +345,12 @@ function Dashboard() {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
   };
 
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  }
+
+  const visibleTasks = isExpanded ? tasks : tasks.slice(0, 3);
+
   return (
     <Layout>
       <DashboardContainer>
@@ -354,41 +385,58 @@ function Dashboard() {
               )}
             </TaskListHeader>
             <TaskSection>
-              <TaskList>
-                {tasks.map((task) => (
-                  <TaskItem key={task._id}>
-                    <CheckCircle 
-                      checked={task.completed} 
-                      onClick={() => toggleTask(task._id)}
-                    />
-                    <TaskText checked={task.completed}>{task.name}</TaskText>
-                    {isToday(selectedDate) && (
-                      <IconContainer>
-                        <Icon onClick={() => deleteTask(task._id)}>
-                          <FaTrash size={16} />
-                        </Icon>
-                      </IconContainer>
-                    )}
-                  </TaskItem>
-                ))}
-                {isAddingTask && isToday(selectedDate) && (
-                  <TaskItem>
-                    <CheckCircle checked={false} />
-                    <NewTaskInput
-                      type="text"
-                      placeholder="New task, press Enter to add"
-                      value={newTask}
-                      onChange={handleNewTaskChange}
-                      onKeyDown={handleNewTaskKeyPress}
-                      onBlur={() => {
-                        setIsAddingTask(false);
-                        setNewTask("");
-                      }}
-                      autoFocus
-                    />
-                  </TaskItem>
-                )}
-              </TaskList>
+              <TaskListWrapper isExpanded={isExpanded}>
+                <TaskList>
+                  {visibleTasks.map((task) => (
+                    <TaskItem key={task._id}>
+                      <CheckCircle 
+                        checked={task.completed} 
+                        onClick={() => toggleTask(task._id)}
+                      />
+                      <TaskText checked={task.completed}>{task.name}</TaskText>
+                      {isToday(selectedDate) && (
+                        <IconContainer>
+                          <Icon onClick={() => deleteTask(task._id)}>
+                            <FaTrash size={16} />
+                          </Icon>
+                        </IconContainer>
+                      )}
+                    </TaskItem>
+                  ))}
+                  {isAddingTask && isToday(selectedDate) && (
+                    <TaskItem>
+                      <CheckCircle checked={false} />
+                      <NewTaskInput
+                        type="text"
+                        placeholder="New task, press Enter to add"
+                        value={newTask}
+                        onChange={handleNewTaskChange}
+                        onKeyDown={handleNewTaskKeyPress}
+                        onBlur={() => {
+                          setIsAddingTask(false);
+                          setNewTask("");
+                        }}
+                        autoFocus
+                      />
+                    </TaskItem>
+                  )}
+                </TaskList>
+              </TaskListWrapper>
+              {tasks.length > 3 && (
+                <ExpandButton onClick={toggleExpand}>
+                  {isExpanded ? (
+                    <>
+                      <FaChevronUp style={{ marginRight: '5px' }} />
+                      Show Less ({tasks.length - 3} more)
+                    </>
+                  ) : (
+                    <>
+                      <FaChevronDown style={{ marginRight: '5px' }} />
+                      Show More ({tasks.length - 3} more)
+                    </>
+                  )}
+                </ExpandButton>
+              )}
             </TaskSection>
           </DateContainer>
         </TasksContainer>

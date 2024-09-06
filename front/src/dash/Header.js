@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '../styling/ThemeContext';
 import { FaSun, FaMoon, FaSignOutAlt } from 'react-icons/fa';
+import authService from '../auth/authService';
 
 const HeaderContainer = styled.header`
   background-color: ${props => props.theme.colors.surface};
@@ -95,11 +96,13 @@ const Header = () => {
   const { isDarkMode, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    // Implement your logout logic here
-    // For example:
-    // logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      navigate('/');
+    } catch (err) {
+      console.error('Logout failed', err);
+    }
   };
 
   return (
