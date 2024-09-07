@@ -5,10 +5,10 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: 'http://localhost:3001',
+    origin: process.env.NODE_ENV === 'production' ? 'http://3.22.63.33' : 'http://localhost:3001',
     credentials: true
 }));
 app.use(express.json());
@@ -20,6 +20,10 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tasks/', require('./routes/taskRoutes'));
+
+app.get('/', (req, res) => {
+    res.send('server is running');
+});
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
 })
