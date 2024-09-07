@@ -253,7 +253,7 @@ function Dashboard() {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/tasks`, { withCredentials: true });
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks`, { withCredentials: true });
       setTasks(response.data.filter(task => isSameDay(new Date(task.date), selectedDate)));
     } catch (err) {
       console.error('Error fetching tasks:', err);
@@ -269,7 +269,7 @@ function Dashboard() {
   const toggleTask = async (id) => {
     if (isToday(selectedDate)) {
       try {
-        const response = await axios.patch(`http://localhost:3000/api/tasks/${id}/toggle`, {}, { withCredentials: true });
+        const response = await axios.patch(`${process.env.REACT_APP_API_URL}/tasks/${id}/toggle`, {}, { withCredentials: true });
         setTasks(tasks.map(task =>
           task._id === id ? { ...task, completed: response.data.completed } : task
         ));
@@ -282,7 +282,7 @@ function Dashboard() {
   const deleteTask = async (id) => {
     if (isToday(selectedDate)) {
       try {
-        await axios.delete(`http://localhost:3000/api/tasks/${id}`, { withCredentials: true });
+        await axios.delete(`${process.env.REACT_APP_API_URL}/tasks/${id}`, { withCredentials: true });
         setTasks(tasks.filter(task => task._id !== id));
       } catch (err) {
         console.error('Error deleting task:', err);
@@ -297,7 +297,7 @@ function Dashboard() {
   const handleNewTaskKeyPress = async (e) => {
     if (e.key === 'Enter' && newTask.trim() && isToday(selectedDate)) {
       try {
-        const response = await axios.post(`http://localhost:3000/api/tasks`, { name: newTask.trim(), date: selectedDate }, { withCredentials: true });
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/tasks`, { name: newTask.trim(), date: selectedDate }, { withCredentials: true });
         setTasks([...tasks, response.data]);
         setNewTask("");
         setIsAddingTask(false);

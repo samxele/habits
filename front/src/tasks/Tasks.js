@@ -265,7 +265,7 @@ function Tasks() {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/tasks`, { withCredentials: true });
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks`, { withCredentials: true });
       setTasks(response.data.filter(task => isToday(new Date(task.date))));
     } catch (err) {
       showErrorMessage('Failed to fetch tasks. Please try again.');
@@ -275,7 +275,7 @@ function Tasks() {
 
   const fetchPastTasks = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/tasks/past`, { withCredentials: true });
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks/past`, { withCredentials: true });
       setPastTasks(response.data);
     } catch (err) {
       showErrorMessage('Failed to fetch past tasks. Please try again.');
@@ -296,7 +296,7 @@ function Tasks() {
 
   const toggleTask = async (id) => {
     try {
-      const response = await axios.patch(`http://localhost:3000/api/tasks/${id}/toggle`, {}, { withCredentials: true });
+      const response = await axios.patch(`${process.env.REACT_APP_API_URL}/tasks/${id}/toggle`, {}, { withCredentials: true });
       setTasks(tasks.map(task =>
         task._id === id ? { ...task, completed: response.data.completed } : task
       ));
@@ -308,7 +308,7 @@ function Tasks() {
 
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/tasks/${id}`, { withCredentials: true });
+      await axios.delete(`${process.env.REACT_APP_API_URL}/tasks/${id}`, { withCredentials: true });
       setTasks(tasks.filter(task => task._id !== id));
     } catch (err) {
       showErrorMessage('Failed to delete task. Please try again');
@@ -319,7 +319,7 @@ function Tasks() {
   const handleEditSubmit = async (e) => {
     if (e.key === 'Enter' && editingTaskName.trim()) {
       try {
-        const response = await axios.patch(`http://localhost:3000/api/tasks/${editingTaskId}`, 
+        const response = await axios.patch(`${process.env.REACT_APP_API_URL}/tasks/${editingTaskId}`, 
           { name: editingTaskName.trim() }, 
           { withCredentials: true }
         );
@@ -370,7 +370,7 @@ function Tasks() {
   const handleNewTaskKeyPress = async (e) => {
     if (e.key === 'Enter' && newTask.trim()) {
       try {
-        const response = await axios.post(`http://localhost:3000/api/tasks`, { name: newTask.trim() }, { withCredentials: true });
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/tasks`, { name: newTask.trim() }, { withCredentials: true });
         setTasks([...tasks, response.data]);
         setNewTask("");
         setIsAddingTask(false);
@@ -402,7 +402,7 @@ function Tasks() {
 
   const submitEdit = async () => {
     try {
-      const response = await axios.patch(`http://localhost:3000/api/tasks/${editingTaskId}`, 
+      const response = await axios.patch(`${process.env.REACT_APP_API_URL}/tasks/${editingTaskId}`, 
         { name: editingTaskName.trim() }, 
         { withCredentials: true }
       );
