@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' ? 'http://3.22.63.33' : 'http://localhost:3001',
+    origin: ['http://3.22.63.33', 'http://localhost:3001'],
     credentials: true
 }));
 app.use(express.json());
@@ -24,6 +24,6 @@ app.use('/api/tasks/', require('./routes/taskRoutes'));
 app.get('/', (req, res) => {
     res.send('server is running');
 });
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server running on port: ${port}`);
-})
+});
