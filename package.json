@@ -7,12 +7,14 @@
     "start": "concurrently \"npm run server\" \"npm run front\"",
     "server": "cd server && npm start",
     "front": "cd front && npm start",
-    "install-all": "npm install && cd server && cd ../front && npm install"
+    "install-all": "npm install && cd server && cd ../front && npm install", 
+    "build": "CI=false react-scripts build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "concurrently": "^8.2.2"
   },
   "dependencies": {
