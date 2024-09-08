@@ -23,6 +23,7 @@ jobs:
     - name: Build application
       run: |
         cd front
+        npm ci
         npm run build
 
     - name: Deploy to EC2
