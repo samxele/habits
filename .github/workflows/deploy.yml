@@ -22,21 +22,28 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          set -e
           echo "Deployment started"
           cd /home/ubuntu/habits
           git pull origin main
-
+    
+          echo "Setting permissions"
+          sudo chown -R ubuntu:ubuntu .
+          sudo chmod -R 755 .
+    
           echo "Building frontend"
           cd front
+          rm -rf build
           npm ci
           npm run build
+    
+          echo "Copying build files"
           sudo cp -R build/* /var/www/html/
-          
+    
           echo "Updating backend"
           cd ../server
           npm ci
           pm2 restart all
-          
+    
+          echo "Restarting Nginx"
           sudo systemctl restart nginx
           echo "Deployment finished"
