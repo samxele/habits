@@ -6,10 +6,6 @@ const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            return savedTheme === 'dark';
-        }
         return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     });
 
@@ -19,10 +15,6 @@ export const ThemeProvider = ({ children }) => {
         mediaQuery.addListener(handleChange);
         return () => mediaQuery.removeListener(handleChange);
     }, []);
-
-    useEffect(() => {
-        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    }, [isDarkMode]);
 
     const toggleTheme = () => {
         setIsDarkMode(!isDarkMode);
