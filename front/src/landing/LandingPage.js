@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
-import { useTheme } from '../styling/ThemeContext';
 
 const LandingContainer = styled.div`
   display: flex;

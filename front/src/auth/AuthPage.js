@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import authService from './authService';
 import styled from 'styled-components';
-import { useTheme } from '../styling/ThemeContext';
+// import { useTheme } from '../styling/ThemeContext';
 
 const AuthContainer = styled.div`
   display: flex;

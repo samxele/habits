@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import Layout from './Layout';
@@ -247,18 +247,18 @@ function Dashboard() {
       date1.getFullYear() === date2.getFullYear();
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, [selectedDate]);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks`, { withCredentials: true });
       setTasks(response.data.filter(task => isSameDay(new Date(task.date), selectedDate)));
     } catch (err) {
       console.error('Error fetching tasks:', err);
     }
-  };
+  }, [selectedDate, setTasks]); 
+
+  useEffect(() => {
+    fetchTasks();
+  }, [selectedDate, fetchTasks]);
 
   const handleAddTask = () => {
     if (isToday(selectedDate)) {

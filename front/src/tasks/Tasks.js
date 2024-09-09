@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import Layout from '../dash/Layout';
@@ -258,12 +258,7 @@ function Tasks() {
     day: 'numeric' 
   });
 
-  useEffect(() => {
-    fetchTasks();
-    fetchPastTasks();
-  }, []);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks`, { withCredentials: true });
       setTasks(response.data.filter(task => isToday(new Date(task.date))));
@@ -271,9 +266,9 @@ function Tasks() {
       showErrorMessage('Failed to fetch tasks. Please try again.');
       console.error('Error fetching tasks:', err);
     }
-  };
+  }, []);
 
-  const fetchPastTasks = async () => {
+  const fetchPastTasks = useCallback(async () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/tasks/past`, { withCredentials: true });
       setPastTasks(response.data);
@@ -281,7 +276,12 @@ function Tasks() {
       showErrorMessage('Failed to fetch past tasks. Please try again.');
       console.error('Error fetching past tasks:', err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTasks();
+    fetchPastTasks();
+  }, [fetchTasks, fetchPastTasks]);
 
   const isToday = (someDate) => {
     const today = new Date()
@@ -316,7 +316,7 @@ function Tasks() {
     }
   };
 
-  const handleEditSubmit = async (e) => {
+  /*const handleEditSubmit = async (e) => {
     if (e.key === 'Enter' && editingTaskName.trim()) {
       try {
         const response = await axios.patch(`${process.env.REACT_APP_API_URL}/tasks/${editingTaskId}`, 
@@ -333,7 +333,7 @@ function Tasks() {
         console.error('Error updating task:', err);
       }
     }
-  };
+  };*/
 
   const showErrorMessage = (message) => {
     setError(message);
@@ -343,9 +343,9 @@ function Tasks() {
     }, 5000);
   };
 
-  const handleTask = () => {
+  /*const handleTask = () => {
     setIsAddingTask(true);
-  };
+  };*/
 
   const handleCancelAddTask = () => {
     setIsAddingTask(false);

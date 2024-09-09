@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import Footer from './Footer';
+// import Footer from './Footer';
 
 const LayoutContainer = styled.div`
   display: flex;
