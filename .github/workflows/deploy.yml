@@ -33,12 +33,17 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd /path/to/your/app/on/ec2
+          cd /home/ubuntu/habits
           git pull origin main
+
+          # Frontend deployment
           cd front
           npm ci
           npm run build
-          sudo cp -R build/* /var/www/your-app-directory/
+          sudo cp -R build/* /var/www/html/  
+
+          # Backend deployment
           cd ../server
           npm ci
           pm2 restart all
+          sudo systemctl restart nginx
